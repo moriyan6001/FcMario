@@ -6,8 +6,8 @@
 	private int VerticalForce;				// 現在の加速度
 	private int VerticalForceFall;			// 降下時の加速度
 	private int VerticalForceDecimalPart;	// 加速度の増加値
-	private int MysteryAdjustment;			// 謎補正
-
+	private int CorrectionValue;			// 累積計算での補正値？
+	
 	private int HorizontalSpeed = 00;		// 横方向速度
 
 	// ジャンプ開始時の初期パラメータ
@@ -37,7 +37,7 @@
 		VerticalForceFall = 0;
 		VerticalForceDecimalPart = 0;
 		CurrentState = MovementState.OnGround;
-		MysteryAdjustment = 0;
+		CorrectionValue = 0;
 
 		VerticalPosition = initVerticalPos;
 	}
@@ -122,16 +122,16 @@
 
 	private void Physics()
 	{
-		// 謎の計算
+		// 累積計算での補正値っぽい（Qiitaの記事参照）
 		int cy = 0;
-		MysteryAdjustment += VerticalForceDecimalPart;
-		if (MysteryAdjustment >= 256)
+		CorrectionValue += VerticalForceDecimalPart;
+		if (CorrectionValue >= 256)
 		{
-			MysteryAdjustment -= 256;
+			CorrectionValue -= 256;
 			cy = 1;
 		}
 
-		// 現在位置に速度を加算 (謎パラメータも加算)
+		// 現在位置に速度を加算 (累積計算での補正値も加算)
 		VerticalPosition += VerticalSpeed + cy;
 
 		// 加速度の固定少数点部への加算
